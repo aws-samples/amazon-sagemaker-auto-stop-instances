@@ -30,7 +30,7 @@ Deploy the cloudformation stack in the AWS region of your choice using the follo
   LambdaRoleName='REPLACE ME' (pass the lambda role name)
   ScheduledTime='REPLACE ME' (pass the cron expression)
 
-  # Deploy Cloudformation Stack
+# Deploy Cloudformation Stack
 
   :::code{showCopyAction=true showLineNumbers=true language=yaml}
   aws cloudformation deploy \
