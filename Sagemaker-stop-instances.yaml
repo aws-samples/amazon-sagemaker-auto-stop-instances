@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cloudformation template to discover all the 'InService' Sagemaker notebooks instances and stop them when idle.
+
+Parameters:
+ ScheduledTime:
+  Type: String
+  Description: The specific time in cron syntax when the Amazon Eventbridge rule should trigger(e.g.("cron 0 8 * *? *")for 8:00 AM UTC)
+ LambdaRoleName:
+  Type: String
+  Description: Name of the IAM role for the lambda function. 
+
+
+Resources:
+ LambdaRole:
+  Type: AWS::IAM::Role
+  Properties:
+   RoleName: !Ref LambdaRoleName
+   AssumeRolePolicyDocument:
+    Version : '2012-10-17'
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: lambda.amazonaws.com
+        Action: sts:AssumeRole
+
+   Policies:
+    - PolicyName: SageMakerNotebookPolicy
+      PolicyDocument:
+       Version: '2012-10-17'
+       Statement:
+        - Effect: Allow
+          Action:
+          - sagemaker:StopNotebookInstance
+          - sagemaker:ListNotebookInstances
+          Resource: !Join
+            - ''
+            - - 'arn:'
+              - !Ref AWS::Partition
+              - ':sagemaker:'
+              - !Ref AWS::Region
+              - ':'
+              - !Ref AWS::AccountId
+              - ':notebook-instance/*'
+
+
+ LambdaFunction:
+  Type : AWS::Lambda::Function
+  Properties:
+   FunctionName: sagemaker_stop_instance_v2
+   Handler: index.handler
+   Role: !GetAtt LambdaRole.Arn
+   Timeout: 120
+   Runtime: python3.9
+   Code:
+    ZipFile: |
+     import json
+     import boto3
+    
+
+     sagemaker = boto3.client("sagemaker")
+     def get_instances_with_status(status):
+       response = sagemaker.list_notebook_instances(StatusEquals=status)
+       instances = response.get('NotebookInstances',[])
+       return instances
+    
+
+     def stop_notebook_instance(instance_name):
+       try:
+        response = sagemaker.stop_notebook_instance(NotebookInstanceName=instance_name)
+        print(f"The notebook instance{instance_name} is stopping")
+       except Exception as e:
+        print(f"Error stopping notebook instance{instance_name}:{str(e)}")
+
+     def handler(event, context):
+        status_to_check = ['Pending','InService']
+        for status in status_to_check:
+          instances = get_instances_with_status(status)
+          instance_name =[]
+          for instance in instances:
+             instance_name.append(instance["NotebookInstanceName"])
+
+        if not instance_name:
+             return {
+                 'statusCode': 200,
+                    'body': json.dumps('No Sagemaker instances are in running mode that needs to be stopped')} 
+   
+        else:
+         for instance_name in instance_name:
+           stop_notebook_instance(instance_name)
+            
+        
+    
+        
+
+ EventRule:
+  Type: AWS::Events::Rule
+  Properties:
+   Description: Eventbridge rule to trigger lambda at a specific time
+   ScheduleExpression: !Ref ScheduledTime
+   State: ENABLED
+   Targets:
+     - Arn: !GetAtt LambdaFunction.Arn
+       Id: TargetFunction
+
+
+Outputs:
+  LambdaFunctionArn:
+   Description: ARN of the created Lambda Function
+   Value: !GetAtt LambdaFunction.Arn
+  LambdRoleArn:
+   Description: ARN of the IAM role created for the lambda function
+   Value : !GetAtt LambdaRole.Arn
