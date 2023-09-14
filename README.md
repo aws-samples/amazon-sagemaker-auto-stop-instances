@@ -32,7 +32,7 @@ LambdaRoleName=**'REPLACE ME'** (pass the lambda role name)
 ScheduledTime=**'REPLACE ME'** (pass the cron expression)
 
 # Deploy Cloudformation Template
-
+```bash
   aws cloudformation deploy \
     --template-file Sagemaker-stop-instances.yaml \
     --stack-name ${StackName} \
@@ -41,7 +41,7 @@ ScheduledTime=**'REPLACE ME'** (pass the cron expression)
         "ScheduledTime=${ScheduledTime}" \
     --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
 
-
+```
 ==============================================
 
 Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
