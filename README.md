@@ -20,7 +20,7 @@ with the **"InService"** status and stops them ensuring that the resources are e
 
 Note : **Architecture Diagram**
 
-![Amazon SageMaker notebook Stop](/amazon-sagemaker-auto-stop-instances/blob/main/images/sagamaker_stop.png)
+![Amazon SageMaker notebook Stop](images/sagamaker_stop.png)
 
 # Requirements
 
