@@ -29,7 +29,7 @@ You need to deploy the Cloudformation stack Sagmaker-stop-instances.yaml in your
 ## Steps
 1. Sign into the **AWS Management Console** at <a href="https://console.aws.amazon.com/">https://console.aws.amazon.com/</a>
 2. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region. For this workshop we will use the **US East (N. Virginia)** [us-east-1]
-3. Install or update the latest version of the AWS CLI <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">
+3. Install or update the latest version of the AWS CLI <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html/</a>
 
 4. Deploy the cloudformation stack in the AWS region of your choice using the following command in the [AWS CLI](https://aws.amazon.com/cli/). You need to provide the values for the parameters lambda role name and cron expression for the scheduled eventbridge rule. 
 
