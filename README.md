@@ -33,11 +33,11 @@ You need to deploy the Cloudformation stack Sagmaker-stop-instances.yaml in your
 
 4. Deploy the cloudformation stack in the AWS region of your choice using the following command in the [AWS CLI](https://aws.amazon.com/cli/). You need to provide the values for the parameters lambda role name and cron expression for the scheduled eventbridge rule. 
 
-**Define the parameter values**
+**Define the parameter values**  
 
-StackName=**'Sagemaker-stop-instances'**
-LambdaRoleName=**'REPLACE ME'** (pass the lambda role name)
-ScheduledTime=**'REPLACE ME'** (pass the cron expression)
+StackName=**'Sagemaker-stop-instances'**  
+LambdaRoleName=**'REPLACE ME'** (pass the lambda role name)  
+ScheduledTime=**'REPLACE ME'** (pass the cron expression)  
 
 **Deploy Cloudformation Template**
 ```bash
